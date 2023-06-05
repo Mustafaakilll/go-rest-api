@@ -6,6 +6,6 @@ type Response struct {
 }
 
 type ResponseStatus struct {
-	ErrorCode int   `json:"errorCode"`
-	Message   error `json:"message"`
+	ErrorCode int    `json:"errorCode"`
+	Message   string `json:"message"`
 }

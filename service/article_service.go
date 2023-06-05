@@ -32,7 +32,7 @@ func (a ApiServer) HandleGetArticles(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -43,7 +43,7 @@ func (a ApiServer) HandleGetArticles(c *gin.Context) {
 		Response{
 			Result: articles,
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
@@ -58,7 +58,7 @@ func (a ApiServer) HandleGetArticleById(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -72,7 +72,7 @@ func (a ApiServer) HandleGetArticleById(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -83,7 +83,7 @@ func (a ApiServer) HandleGetArticleById(c *gin.Context) {
 		Response{
 			Result: articles,
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
@@ -102,7 +102,7 @@ func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -116,7 +116,7 @@ func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -127,7 +127,7 @@ func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
 		Response{
 			Result: articles,
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
@@ -135,7 +135,7 @@ func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
 }
 
 func (a ApiServer) HandleCreateArticle(c *gin.Context) {
-	var newarticle Article
+	var newarticle CreateArticle
 	err := c.BindJSON(&newarticle)
 
 	if err != nil {
@@ -144,7 +144,7 @@ func (a ApiServer) HandleCreateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -158,7 +158,7 @@ func (a ApiServer) HandleCreateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -172,7 +172,7 @@ func (a ApiServer) HandleCreateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -183,7 +183,7 @@ func (a ApiServer) HandleCreateArticle(c *gin.Context) {
 		Response{
 			Result: article,
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
@@ -200,7 +200,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -213,7 +213,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -227,7 +227,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -241,7 +241,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -252,7 +252,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 		Response{
 			Result: article,
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
@@ -268,7 +268,7 @@ func (a ApiServer) HandleDeleteArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -281,7 +281,7 @@ func (a ApiServer) HandleDeleteArticle(c *gin.Context) {
 			Response{
 				Result: nil,
 				ResponseStaus: ResponseStatus{
-					ErrorCode: 01, Message: err,
+					ErrorCode: 01, Message: err.Error(),
 				},
 			},
 		)
@@ -293,7 +293,7 @@ func (a ApiServer) HandleDeleteArticle(c *gin.Context) {
 		Response{
 			Result: "Article deleted",
 			ResponseStaus: ResponseStatus{
-				Message:   nil,
+				Message:   "",
 				ErrorCode: 0,
 			},
 		},
