@@ -28,7 +28,7 @@ type DatabaseOperations interface {
 	GetArticleById(int) (*Article, error)
 	GetArticleByAuthor(int) ([]*Article, error)
 	CreateArticle(CreateArticle) (int, error)
-	UpdateArticle(int, UpdateArticle) (*Article, error)
+	UpdateArticle(int, UpdateArticle) error
 	DeleteArticle(int) error
 }
 
@@ -85,18 +85,17 @@ func (s SqliteDB) CreateArticle(newarticle CreateArticle) (int, error) {
 	return int(article.ID), nil
 }
 
-func (s SqliteDB) UpdateArticle(id int, newarticle UpdateArticle) (*Article, error) {
+func (s SqliteDB) UpdateArticle(id int, newarticle UpdateArticle) error {
 	var article Article
 	if err := s.db.Where("id = ?", id).First(&article).Error; err != nil {
-		return &Article{}, err
+		return err
 	}
 
 	result := s.db.Model(article).Updates(newarticle)
 	if result.Error != nil {
-		return &Article{}, result.Error
+		return result.Error
 	}
-
-	return &article, nil
+	return nil
 }
 
 func (s SqliteDB) DeleteArticle(id int) error {

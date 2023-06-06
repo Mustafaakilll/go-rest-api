@@ -11,8 +11,6 @@ import (
 )
 
 func main() {
-	log.SetFlags(log.Lshortfile)
-
 	db, err := database.ConnectDB()
 	if err != nil {
 		log.Fatal(err)
