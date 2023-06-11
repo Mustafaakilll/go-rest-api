@@ -11,17 +11,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type ApiServer struct {
+type ArticleService struct {
 	storage database.DatabaseOperations
 }
 
-func NewApiServer(storage database.DatabaseOperations) *ApiServer {
-	return &ApiServer{
+func NewArticleService(storage database.DatabaseOperations) *ArticleService {
+	return &ArticleService{
 		storage: storage,
 	}
 }
 
-func (a ApiServer) HandleGetArticles(c *gin.Context) {
+func (a ArticleService) HandleGetArticles(c *gin.Context) {
 	if c.Query("authorId") != "" {
 		return
 	}
@@ -33,7 +33,7 @@ func (a ApiServer) HandleGetArticles(c *gin.Context) {
 	c.JSON(SuccessResponse(articles))
 }
 
-func (a ApiServer) HandleGetArticleById(c *gin.Context) {
+func (a ArticleService) HandleGetArticleById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(ErrorResponse(err.Error(), http.StatusBadRequest))
@@ -48,7 +48,7 @@ func (a ApiServer) HandleGetArticleById(c *gin.Context) {
 	c.JSON(SuccessResponse(article))
 }
 
-func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
+func (a ArticleService) HandleGetArticleByAuthor(c *gin.Context) {
 	if c.Query("authorId") == "" {
 		return
 	}
@@ -67,10 +67,11 @@ func (a ApiServer) HandleGetArticleByAuthor(c *gin.Context) {
 	c.JSON(SuccessResponse(articles))
 }
 
-func (a ApiServer) HandleCreateArticle(c *gin.Context) {
+func (a ArticleService) HandleCreateArticle(c *gin.Context) {
 	var newarticle CreateArticle
 	if err := c.BindJSON(&newarticle); err != nil {
 		c.JSON(ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
 	}
 
 	articleId, err := a.storage.CreateArticle(newarticle)
@@ -87,7 +88,7 @@ func (a ApiServer) HandleCreateArticle(c *gin.Context) {
 	c.JSON(SuccessResponse(article))
 }
 
-func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
+func (a ArticleService) HandleUpdateArticle(c *gin.Context) {
 	var newarticle UpdateArticle
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -115,7 +116,7 @@ func (a ApiServer) HandleUpdateArticle(c *gin.Context) {
 	c.JSON(SuccessResponse(article))
 }
 
-func (a ApiServer) HandleDeleteArticle(c *gin.Context) {
+func (a ArticleService) HandleDeleteArticle(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {

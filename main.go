@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"src/github.com/mustafaakilll/rest_api/database"
+	"src/github.com/mustafaakilll/rest_api/middleware"
 	"src/github.com/mustafaakilll/rest_api/service"
 
 	"github.com/gin-contrib/logger"
@@ -20,17 +21,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	apiServer := service.NewApiServer(db)
+	articleService := service.NewArticleService(db)
+	userService := service.NewUserService(db)
+	tokenService := service.NewTokenService(db)
 
 	r := gin.New()
 	r.Use(logger.SetLogger())
 
 	r.GET("/ping", ping)
-	r.GET("/articles", apiServer.HandleGetArticles, apiServer.HandleGetArticleByAuthor)
-	r.GET("/articles/:id", apiServer.HandleGetArticleById)
-	r.PUT("/articles/:id", apiServer.HandleUpdateArticle)
-	r.POST("/articles", apiServer.HandleCreateArticle)
-	r.DELETE("/articles/:id", apiServer.HandleDeleteArticle)
+	r.GET("/articles", articleService.HandleGetArticles, articleService.HandleGetArticleByAuthor)
+	r.GET("/articles/:id", articleService.HandleGetArticleById)
+	r.PUT("/articles/:id", articleService.HandleUpdateArticle)
+	r.POST("/articles", middleware.Auth(), articleService.HandleCreateArticle)
+	r.DELETE("/articles/:id", articleService.HandleDeleteArticle)
+
+	r.POST("/register", userService.HandleRegisterUser)
+	r.POST("/token", tokenService.GenerateToken)
 
 	http.ListenAndServe(":3000", r)
 }

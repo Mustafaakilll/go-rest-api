@@ -10,7 +10,7 @@ import (
 )
 
 type SqliteDB struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 func ConnectDB() (*SqliteDB, error) {
@@ -20,7 +20,7 @@ func ConnectDB() (*SqliteDB, error) {
 		return &SqliteDB{}, err
 	}
 
-	return &SqliteDB{db: db}, nil
+	return &SqliteDB{DB: db}, nil
 }
 
 type DatabaseOperations interface {
@@ -30,6 +30,8 @@ type DatabaseOperations interface {
 	CreateArticle(CreateArticle) (int, error)
 	UpdateArticle(int, UpdateArticle) error
 	DeleteArticle(int) error
+	RegisterUser(*User) error
+	GetUserByEmail(string) (*User, error)
 }
 
 func (s SqliteDB) Init() error {
@@ -37,14 +39,14 @@ func (s SqliteDB) Init() error {
 }
 
 func (s SqliteDB) createArticleTable() error {
-	err := s.db.AutoMigrate(&Article{})
+	err := s.DB.AutoMigrate(&Article{}, &User{})
 	return err
 
 }
 
 func (s SqliteDB) GetArticles() ([]*Article, error) {
 	var articles []*Article
-	result := s.db.Find(&articles)
+	result := s.DB.Find(&articles)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -54,7 +56,7 @@ func (s SqliteDB) GetArticles() ([]*Article, error) {
 
 func (s SqliteDB) GetArticleById(id int) (*Article, error) {
 	var article *Article
-	result := s.db.First(&article, id)
+	result := s.DB.First(&article, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -64,7 +66,7 @@ func (s SqliteDB) GetArticleById(id int) (*Article, error) {
 
 func (s SqliteDB) GetArticleByAuthor(authorId int) ([]*Article, error) {
 	var articles []*Article
-	result := s.db.Find(&articles, "author=?", authorId)
+	result := s.DB.Find(&articles, "author=?", authorId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -77,7 +79,7 @@ func (s SqliteDB) CreateArticle(newarticle CreateArticle) (int, error) {
 		Name:   newarticle.Name,
 		Author: newarticle.Author,
 	}
-	result := s.db.Create(&article)
+	result := s.DB.Create(&article)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -87,11 +89,11 @@ func (s SqliteDB) CreateArticle(newarticle CreateArticle) (int, error) {
 
 func (s SqliteDB) UpdateArticle(id int, newarticle UpdateArticle) error {
 	var article Article
-	if err := s.db.Where("id = ?", id).First(&article).Error; err != nil {
+	if err := s.DB.Where("id = ?", id).First(&article).Error; err != nil {
 		return err
 	}
 
-	result := s.db.Model(article).Updates(newarticle)
+	result := s.DB.Model(article).Updates(newarticle)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -99,10 +101,29 @@ func (s SqliteDB) UpdateArticle(id int, newarticle UpdateArticle) error {
 }
 
 func (s SqliteDB) DeleteArticle(id int) error {
-	result := s.db.Delete(&Article{}, id)
+	result := s.DB.Delete(&Article{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
 
 	return nil
+}
+
+func (s SqliteDB) RegisterUser(user *User) error {
+	result := s.DB.Create(&user)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (s SqliteDB) GetUserByEmail(email string) (*User, error) {
+	var user *User
+	result := s.DB.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return user, nil
 }
