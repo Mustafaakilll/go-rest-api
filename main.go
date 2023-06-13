@@ -23,7 +23,6 @@ func main() {
 
 	articleService := service.NewArticleService(db)
 	userService := service.NewUserService(db)
-	tokenService := service.NewTokenService(db)
 
 	r := gin.New()
 	r.Use(logger.SetLogger())
@@ -31,12 +30,12 @@ func main() {
 	r.GET("/ping", ping)
 	r.GET("/articles", articleService.HandleGetArticles, articleService.HandleGetArticleByAuthor)
 	r.GET("/articles/:id", articleService.HandleGetArticleById)
-	r.PUT("/articles/:id", articleService.HandleUpdateArticle)
+	r.PUT("/articles/:id", middleware.Auth(), articleService.HandleUpdateArticle)
 	r.POST("/articles", middleware.Auth(), articleService.HandleCreateArticle)
 	r.DELETE("/articles/:id", articleService.HandleDeleteArticle)
 
 	r.POST("/register", userService.HandleRegisterUser)
-	r.POST("/token", tokenService.GenerateToken)
+	r.POST("/login", userService.HandleLoginUser)
 
 	http.ListenAndServe(":3000", r)
 }

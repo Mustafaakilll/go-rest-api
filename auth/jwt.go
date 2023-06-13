@@ -16,13 +16,11 @@ type JWTClaims struct {
 }
 
 func GenerateJWT(email, username string) (string, error) {
-	expireTime := time.Now().Add(1 * time.Hour)
+	// expireTime := time.Now().Add(1 * time.Hour)
 	claims := &JWTClaims{
-		Email:    email,
-		Username: username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
-		},
+		Email:          email,
+		Username:       username,
+		StandardClaims: jwt.StandardClaims{},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

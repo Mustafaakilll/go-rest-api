@@ -2,6 +2,7 @@ package service
 
 import (
 	"net/http"
+	"src/github.com/mustafaakilll/rest_api/auth"
 	"src/github.com/mustafaakilll/rest_api/database"
 	"src/github.com/mustafaakilll/rest_api/types"
 
@@ -39,5 +40,50 @@ func (u UserService) HandleRegisterUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, user)
+	token, err := auth.GenerateJWT(user.Email, user.Username)
+	if err != nil {
+		ctx.Abort()
+		ctx.JSON(types.ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	ctx.JSON(types.SuccessResponse(map[string]any{
+		"user":  user,
+		"token": token,
+	}))
+}
+
+func (u UserService) HandleLoginUser(ctx *gin.Context) {
+	var incomingUser types.User
+	if err := ctx.ShouldBind(&incomingUser); err != nil {
+		ctx.Abort()
+		ctx.JSON(types.ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	user, err := u.storage.GetUserByEmail(incomingUser.Email)
+	if err != nil {
+		ctx.Abort()
+		ctx.JSON(types.ErrorResponse(err.Error(), http.StatusInternalServerError))
+		return
+	}
+
+	credentialError := user.CheckPassword(incomingUser.Password)
+	if credentialError != nil {
+		ctx.Abort()
+		ctx.JSON(types.ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	token, err := auth.GenerateJWT(user.Email, user.Username)
+	if err != nil {
+		ctx.Abort()
+		ctx.JSON(types.ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	ctx.JSON(types.SuccessResponse(map[string]any{
+		"user":  user,
+		"token": token,
+	}))
 }
